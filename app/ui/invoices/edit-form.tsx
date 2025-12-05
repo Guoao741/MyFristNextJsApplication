@@ -11,8 +11,6 @@ import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateInvoice } from '@/app/lib/actions';
 
-
-
 export default function EditInvoiceForm({
   invoice,
   customers,
@@ -20,8 +18,15 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
-  //返回一个函数，该函数自带一个invoice的id参数
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  // 创建一个包装函数来处理返回类型问题
+  async function updateInvoiceWithId(formData: FormData) {
+    const result = await updateInvoice(invoice.id, formData);
+    if (result && result.message) {
+      // 处理可能的错误消息
+      console.error(result.message);
+    }
+  }
+
   return (
     <form action={updateInvoiceWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
